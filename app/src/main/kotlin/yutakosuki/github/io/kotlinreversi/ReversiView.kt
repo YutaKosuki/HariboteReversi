@@ -6,6 +6,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.Paint
+import android.service.voice.AlwaysOnHotwordDetector
 import android.view.MotionEvent
 import android.view.View
 
@@ -27,6 +28,8 @@ internal class ReversiView(context: Context) : View(context) {
     private val PASS: Int = 6
     private val RESULT: Int = 7
 
+    private val MOVE: Array<Int> = arrayOf(-11, -10, -9, -1, 1, 9, 10, 11)
+
     private val BLOCK_WIDTH: Int = 96
     private val BLOCK_HELGHT: Int = 96
 
@@ -34,6 +37,7 @@ internal class ReversiView(context: Context) : View(context) {
     private var page: Int = TITLE
     private var turn: Int = TITLE
     private var place: Int = 0
+    private var placeMap: Array<Int> = Array(100) { 0 }
 
     //描写処理
     public override fun onDraw(c: Canvas) {
@@ -53,8 +57,18 @@ internal class ReversiView(context: Context) : View(context) {
                 invalidate()
             }
             PLAYER -> {
+                makePlaceMap(PLAYER)
+                //おける場所を表示
+                for (i in (11..88)) {
+                    if (placeMap[i] > 0) c.drawBitmap(IMG_LIGHT, (BLOCK_WIDTH * (i % 10)).toFloat(), (BLOCK_HELGHT * (i / 10)).toFloat(), paint)
+                }
             }
             COM -> {
+                makePlaceMap(COM)
+                //おける場所を表示
+                for (i in (11..88)) {
+                    if (placeMap[i] > 0) c.drawBitmap(IMG_LIGHT, (BLOCK_WIDTH * (i % 10)).toFloat(), (BLOCK_HELGHT * (i / 10)).toFloat(), paint)
+                }
             }
             REVERS -> {
                 // おいて裏返す
@@ -105,16 +119,20 @@ internal class ReversiView(context: Context) : View(context) {
                     invalidate()
                 }
                 PLAYER -> {
-                    place = padX + padY * 10
-                    //ページ移動
-                    page = REVERS
-                    invalidate()
+                    if (placeMap[padX + padY * 10] > 0) {
+                        place = padX + padY * 10
+                        //ページ移動
+                        page = REVERS
+                        invalidate()
+                    }
                 }
                 COM -> {
-                    place = padX + padY * 10
-                    //ページ移動
-                    page = REVERS
-                    invalidate()
+                    if (placeMap[padX + padY * 10] > 0) {
+                        place = padX + padY * 10
+                        //ページ移動
+                        page = REVERS
+                        invalidate()
+                    }
                 }
                 PASS -> {
                 }
@@ -132,5 +150,34 @@ internal class ReversiView(context: Context) : View(context) {
             yourCoin = COM
         }
         board[place] = myCoin
+    }
+
+    // そこにはおけるか
+    private fun makePlaceMap(myCoin: Int): Boolean {
+        var yourCoin = PLAYER
+        var pass = true
+
+        if (myCoin == PLAYER) yourCoin = COM
+
+        for (p in (0..99)) {
+            placeMap[p] = 0
+            if (0 < p && p < 100 && board[p] == 0) {
+                for (i in (0..7)) {
+                    if (board[p + MOVE[i]] == yourCoin) {
+                        for (j in (2..7)) {
+                            if (board[p + MOVE[i] * j] == myCoin) {
+                                placeMap[p] += j - 1
+                                pass = false
+                                break
+                            } else if (board[p + MOVE[i] * j] == yourCoin) {
+                            } else {
+                                break
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return pass
     }
 }
