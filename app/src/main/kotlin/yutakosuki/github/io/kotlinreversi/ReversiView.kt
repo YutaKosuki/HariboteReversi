@@ -27,17 +27,21 @@ internal class ReversiView(context: Context) : View(context) {
     private val PASS: Int = 6
     private val RESULT: Int = 7
 
+    private val BLOCK_WIDTH: Int = 96
+    private val BLOCK_HELGHT: Int = 96
+
     private var board: Array<Int> = Array(100) { 0 }
     private var page: Int = TITLE
     private var turn: Int = TITLE
+    private var place: Int = 0
 
     //描写処理
     public override fun onDraw(c: Canvas) {
         // ボードを表示
         c.drawBitmap(IMG_BOARD, 0.0f, 0.0f, paint)
         for (i in (11..88)) {
-            if (board[i] == PLAYER) c.drawBitmap(IMG_BLACK, 48.0f * (i % 10), 48.0f * (i / 10), paint);
-            if (board[i] == COM) c.drawBitmap(IMG_WHITE, 48.0f * (i % 10), 48.0f * (i / 10), paint);
+            if (board[i] == PLAYER) c.drawBitmap(IMG_BLACK, (BLOCK_WIDTH * (i % 10)).toFloat(), (BLOCK_HELGHT * (i / 10)).toFloat(), paint);
+            if (board[i] == COM) c.drawBitmap(IMG_WHITE, (BLOCK_WIDTH * (i % 10)).toFloat(), (BLOCK_HELGHT * (i / 10)).toFloat(), paint);
         }
 
         when (page) {
@@ -45,7 +49,7 @@ internal class ReversiView(context: Context) : View(context) {
             }
             TURN -> {
                 // ページ移動
-                page = TURN
+                page = turn
                 invalidate()
             }
             PLAYER -> {
@@ -53,6 +57,8 @@ internal class ReversiView(context: Context) : View(context) {
             COM -> {
             }
             REVERS -> {
+                // おいて裏返す
+                this.reverse(turn, place)
                 // ページ移動
                 page = CONTROL
                 invalidate()
@@ -72,17 +78,20 @@ internal class ReversiView(context: Context) : View(context) {
 
     //タッチ入力処理
     override fun onTouchEvent(me: MotionEvent): Boolean {
+        var padX = (me.getX() / BLOCK_WIDTH).toInt()
+        var padY = (me.getY() / BLOCK_HELGHT).toInt()
+
         if (me.action == MotionEvent.ACTION_DOWN) {
             when (page) {
                 TITLE -> {
-                    for (i in (0..100)) {
+                    for (i in (0..99)) {
                         board[i] = 0
                     }
-                    for (i in (0..10)) {
+                    for (i in (0..9)) {
                         board[i] = -1
                         board[i + 90] = -1
                     }
-                    for (i in (1..9)) {
+                    for (i in (1..8)) {
                         board[i * 10] = -1
                         board[i * 10 + 9] = -1
                     }
@@ -96,11 +105,13 @@ internal class ReversiView(context: Context) : View(context) {
                     invalidate()
                 }
                 PLAYER -> {
+                    place = padX + padY * 10
                     //ページ移動
                     page = REVERS
                     invalidate()
                 }
                 COM -> {
+                    place = padX + padY * 10
                     //ページ移動
                     page = REVERS
                     invalidate()
@@ -112,5 +123,14 @@ internal class ReversiView(context: Context) : View(context) {
             }
         }
         return true
+    }
+
+    // おいて裏返す
+    private fun reverse(myCoin: Int, place: Int) {
+        var yourCoin = PLAYER
+        if (myCoin == PLAYER) {
+            yourCoin = COM
+        }
+        board[place] = myCoin
     }
 }
