@@ -92,8 +92,8 @@ internal class ReversiView(context: Context) : View(context) {
 
     //タッチ入力処理
     override fun onTouchEvent(me: MotionEvent): Boolean {
-        var padX = (me.getX() / BLOCK_WIDTH).toInt()
-        var padY = (me.getY() / BLOCK_HELGHT).toInt()
+        var padX = (me.x / BLOCK_WIDTH).toInt()
+        var padY = (me.y / BLOCK_HELGHT).toInt()
 
         if (me.action == MotionEvent.ACTION_DOWN) {
             when (page) {
