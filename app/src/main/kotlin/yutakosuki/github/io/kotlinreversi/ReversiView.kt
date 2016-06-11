@@ -10,25 +10,26 @@ import android.view.MotionEvent
 import android.view.View
 
 internal class ReversiView(context: Context) : View(context) {
-    private var res: Resources = context.resources
-    private var IMG_BOARD: Bitmap = BitmapFactory.decodeResource(res, R.drawable.board)
-    private var IMG_BLACK: Bitmap = BitmapFactory.decodeResource(res, R.drawable.black)
-    private var IMG_WHITE: Bitmap = BitmapFactory.decodeResource(res, R.drawable.white)
-    private var IMG_LIGHT: Bitmap = BitmapFactory.decodeResource(res, R.drawable.light)
+    private val res: Resources = context.resources
+    private val IMG_BOARD: Bitmap = BitmapFactory.decodeResource(res, R.drawable.board)
+    private val IMG_BLACK: Bitmap = BitmapFactory.decodeResource(res, R.drawable.black)
+    private val IMG_WHITE: Bitmap = BitmapFactory.decodeResource(res, R.drawable.white)
+    private val IMG_LIGHT: Bitmap = BitmapFactory.decodeResource(res, R.drawable.light)
 
-    private var paint: Paint = Paint()
+    private val paint: Paint = Paint()
 
-    private var TITLE: Int = 0
-    private var PLAYER: Int = 1
-    private var COM: Int = 2
-    private var TURN: Int = 3
-    private var REVERS: Int = 4
-    private var CONTROL: Int = 5
-    private var PASS: Int = 6
-    private var RESULT: Int = 7
+    private val TITLE: Int = 0
+    private val PLAYER: Int = 1
+    private val COM: Int = 2
+    private val TURN: Int = 3
+    private val REVERS: Int = 4
+    private val CONTROL: Int = 5
+    private val PASS: Int = 6
+    private val RESULT: Int = 7
 
-    private val board: Array<Int> = Array(100) { 0 }
-    private val page:Int = TITLE
+    private var board: Array<Int> = Array(100) { 0 }
+    private var page:Int = TITLE
+    private var turn:Int = TITLE
 
     //描写処理
     public override fun onDraw(c: Canvas) {
