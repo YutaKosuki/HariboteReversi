@@ -56,7 +56,26 @@ internal class ReversiView(context: Context) : View(context) {
     override fun onTouchEvent(me: MotionEvent): Boolean {
         if (me.action == MotionEvent.ACTION_DOWN) {
             when(page) {
-                TITLE -> {}
+                TITLE -> {
+                    for(i in (0..100)) {
+                        board[i] = 0
+                    }
+                    for(i in (0..10)) {
+                        board[i] = -1
+                        board[i+90] = -1
+                    }
+                    for(i in (1..9)) {
+                        board[i*10] = -1
+                        board[i*10+9] = -1
+                    }
+
+                    board[44] = COM
+                    board[45] = PLAYER
+                    board[54] = PLAYER
+                    board[55] = COM
+                    turn = PLAYER
+                    invalidate()
+                }
                 PLAYER -> {}
                 COM -> {}
                 PASS -> {}
