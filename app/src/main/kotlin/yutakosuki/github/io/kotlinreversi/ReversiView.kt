@@ -28,58 +28,87 @@ internal class ReversiView(context: Context) : View(context) {
     private val RESULT: Int = 7
 
     private var board: Array<Int> = Array(100) { 0 }
-    private var page:Int = TITLE
-    private var turn:Int = TITLE
+    private var page: Int = TITLE
+    private var turn: Int = TITLE
 
     //描写処理
     public override fun onDraw(c: Canvas) {
         // ボードを表示
         c.drawBitmap(IMG_BOARD, 0.0f, 0.0f, paint)
-        for(i in (11..88)) {
-            if(board[i]==PLAYER) c.drawBitmap(IMG_BLACK, 48.0f*(i%10), 48.0f*(i/10), paint);
-            if(board[i]==COM) c.drawBitmap(IMG_WHITE, 48.0f*(i%10), 48.0f*(i/10), paint);
+        for (i in (11..88)) {
+            if (board[i] == PLAYER) c.drawBitmap(IMG_BLACK, 48.0f * (i % 10), 48.0f * (i / 10), paint);
+            if (board[i] == COM) c.drawBitmap(IMG_WHITE, 48.0f * (i % 10), 48.0f * (i / 10), paint);
         }
 
-        when(page) {
-            TITLE -> {}
-            TURN -> {}
-            PLAYER -> {}
-            COM -> {}
-            REVERS -> {}
-            CONTROL -> {}
-            PASS -> {}
-            RESULT -> {}
+        when (page) {
+            TITLE -> {
+            }
+            TURN -> {
+                // ページ移動
+                page = TURN
+                invalidate()
+            }
+            PLAYER -> {
+            }
+            COM -> {
+            }
+            REVERS -> {
+                // ページ移動
+                page = CONTROL
+                invalidate()
+            }
+            CONTROL -> {
+                // ターン交代
+                turn = if (turn == PLAYER) COM else PLAYER
+                page = TURN
+                invalidate()
+            }
+            PASS -> {
+            }
+            RESULT -> {
+            }
         }
     }
 
     //タッチ入力処理
     override fun onTouchEvent(me: MotionEvent): Boolean {
         if (me.action == MotionEvent.ACTION_DOWN) {
-            when(page) {
+            when (page) {
                 TITLE -> {
-                    for(i in (0..100)) {
+                    for (i in (0..100)) {
                         board[i] = 0
                     }
-                    for(i in (0..10)) {
+                    for (i in (0..10)) {
                         board[i] = -1
-                        board[i+90] = -1
+                        board[i + 90] = -1
                     }
-                    for(i in (1..9)) {
-                        board[i*10] = -1
-                        board[i*10+9] = -1
+                    for (i in (1..9)) {
+                        board[i * 10] = -1
+                        board[i * 10 + 9] = -1
                     }
-
                     board[44] = COM
                     board[45] = PLAYER
                     board[54] = PLAYER
                     board[55] = COM
                     turn = PLAYER
+                    //ページ移動
+                    page = turn
                     invalidate()
                 }
-                PLAYER -> {}
-                COM -> {}
-                PASS -> {}
-                RESULT -> {}
+                PLAYER -> {
+                    //ページ移動
+                    page = REVERS
+                    invalidate()
+                }
+                COM -> {
+                    //ページ移動
+                    page = REVERS
+                    invalidate()
+                }
+                PASS -> {
+                }
+                RESULT -> {
+                }
             }
         }
         return true
