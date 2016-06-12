@@ -6,6 +6,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.Paint
+import android.graphics.Color
 import android.service.voice.AlwaysOnHotwordDetector
 import android.view.MotionEvent
 import android.view.View
@@ -27,6 +28,8 @@ internal class ReversiView(context: Context) : View(context) {
     private val CONTROL: Int = 5
     private val PASS: Int = 6
     private val RESULT: Int = 7
+    private val BLACK: Int = 8
+    private val WHITE: Int = 9
 
     private val MOVE: Array<Int> = arrayOf(-11, -10, -9, -1, 1, 9, 10, 11)
 
@@ -38,6 +41,12 @@ internal class ReversiView(context: Context) : View(context) {
     private var turn: Int = TITLE
     private var place: Int = 0
     private var placeMap: Array<Int> = Array(100) { 0 }
+    private var playerColor = BLACK
+
+    init {
+        paint.color = Color.BLUE
+        paint.textSize = 60f
+    }
 
     //描写処理
     public override fun onDraw(c: Canvas) {
@@ -91,6 +100,7 @@ internal class ReversiView(context: Context) : View(context) {
                 invalidate()
             }
             PASS -> {
+                c.drawText("パス", 200.toFloat(), 600.toFloat(), paint)
                 // ターンを交代
                 turn = if (turn == PLAYER) COM else PLAYER
                 // ページ移動
@@ -98,6 +108,10 @@ internal class ReversiView(context: Context) : View(context) {
                 invalidate()
             }
             RESULT -> {
+                c.drawText("結果", 400.toFloat(), 1100.toFloat(), paint)
+                c.drawLine(100.toFloat(), 1120.toFloat(), 860.toFloat(), 1120.toFloat(), paint)
+                c.drawText("黒　" + count(BLACK) + "　個", 200.toFloat(), 1300.toFloat(), paint)
+                c.drawText("白　" + count(WHITE) + "　個", 200.toFloat(), 1400.toFloat(), paint)
             }
         }
     }
@@ -211,5 +225,21 @@ internal class ReversiView(context: Context) : View(context) {
             }
         }
         return pass
+    }
+
+    // 石の数を数える
+    private fun count(color: Int): Int {
+        var count = 0
+
+        if (playerColor == color) {
+            for (i in (0..99)) {
+                if (board[i] == PLAYER) count++;
+            }
+        } else {
+            for (i in (0..99)) {
+                if (board[i] == COM) count++;
+            }
+        }
+        return count
     }
 }
