@@ -30,7 +30,7 @@ internal class ReversiView(context: Context) : View(context) {
     private val MOVE: Array<Int> = arrayOf(-11, -10, -9, -1, 1, 9, 10, 11)
 
     private val BLOCK_WIDTH: Int = 96
-    private val BLOCK_HELGHT: Int = 96
+    private val BLOCK_HEIGHT: Int = 96
 
     private var board: Array<Int> = Array(100) { 0 }
     private var page: Int = this.TITLE
@@ -50,8 +50,8 @@ internal class ReversiView(context: Context) : View(context) {
         c.drawBitmap(this.IMG_BOARD, 0.0f, 0.0f, this.paint)
 
         for (i in (11..88)) {
-            if (this.board[i] == this.PLAYER) c.drawBitmap(this.IMG_BLACK, (this.BLOCK_WIDTH * (i % 10)).toFloat(), (this.BLOCK_HELGHT * (i / 10)).toFloat(), this.paint);
-            if (this.board[i] == this.COM) c.drawBitmap(this.IMG_WHITE, (this.BLOCK_WIDTH * (i % 10)).toFloat(), (this.BLOCK_HELGHT * (i / 10)).toFloat(), this.paint);
+            if (this.board[i] == this.PLAYER) c.drawBitmap(this.IMG_BLACK, (this.BLOCK_WIDTH * (i % 10)).toFloat(), (this.BLOCK_HEIGHT * (i / 10)).toFloat(), this.paint);
+            if (this.board[i] == this.COM) c.drawBitmap(this.IMG_WHITE, (this.BLOCK_WIDTH * (i % 10)).toFloat(), (this.BLOCK_HEIGHT * (i / 10)).toFloat(), this.paint);
         }
 
         when (this.page) {
@@ -66,14 +66,14 @@ internal class ReversiView(context: Context) : View(context) {
                 this.makePlaceMap(this.PLAYER)
                 //おける場所を表示
                 for (i in (11..88)) {
-                    if (this.placeMap[i] > 0) c.drawBitmap(this.IMG_LIGHT, (this.BLOCK_WIDTH * (i % 10)).toFloat(), (this.BLOCK_HELGHT * (i / 10)).toFloat(), this.paint)
+                    if (this.placeMap[i] > 0) c.drawBitmap(this.IMG_LIGHT, (this.BLOCK_WIDTH * (i % 10)).toFloat(), (this.BLOCK_HEIGHT * (i / 10)).toFloat(), this.paint)
                 }
             }
             this.COM -> {
                 this.makePlaceMap(this.COM)
                 //おける場所を表示
                 for (i in (11..88)) {
-                    if (this.placeMap[i] > 0) c.drawBitmap(this.IMG_LIGHT, (this.BLOCK_WIDTH * (i % 10)).toFloat(), (this.BLOCK_HELGHT * (i / 10)).toFloat(), this.paint)
+                    if (this.placeMap[i] > 0) c.drawBitmap(this.IMG_LIGHT, (this.BLOCK_WIDTH * (i % 10)).toFloat(), (this.BLOCK_HEIGHT * (i / 10)).toFloat(), this.paint)
                 }
             }
             this.REVERS -> {
@@ -116,7 +116,7 @@ internal class ReversiView(context: Context) : View(context) {
     //タッチ入力処理
     override fun onTouchEvent(me: MotionEvent): Boolean {
         var padX = (me.x / this.BLOCK_WIDTH).toInt()
-        var padY = (me.y / this.BLOCK_HELGHT).toInt()
+        var padY = (me.y / this.BLOCK_HEIGHT).toInt()
 
         if (padX > 10) return true
         if (padY > 10) return true
