@@ -2,11 +2,7 @@ package yutakosuki.github.io.kotlinreversi
 
 import android.content.Context
 import android.content.res.Resources
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.Canvas
-import android.graphics.Paint
-import android.graphics.Color
+import android.graphics.*
 import android.service.voice.AlwaysOnHotwordDetector
 import android.view.MotionEvent
 import android.view.View
@@ -33,8 +29,8 @@ internal class ReversiView(context: Context) : View(context) {
 
     private val MOVE: Array<Int> = arrayOf(-11, -10, -9, -1, 1, 9, 10, 11)
 
-    private val BLOCK_WIDTH: Int = 96
-    private val BLOCK_HELGHT: Int = 96
+    private var BLOCK_WIDTH: Int = 96
+    private var BLOCK_HELGHT: Int = 96
 
     private var board: Array<Int> = Array(100) { 0 }
     private var page: Int = TITLE
@@ -52,6 +48,7 @@ internal class ReversiView(context: Context) : View(context) {
     public override fun onDraw(c: Canvas) {
         // ボードを表示
         c.drawBitmap(IMG_BOARD, 0.0f, 0.0f, paint)
+
         for (i in (11..88)) {
             if (board[i] == PLAYER) c.drawBitmap(IMG_BLACK, (BLOCK_WIDTH * (i % 10)).toFloat(), (BLOCK_HELGHT * (i / 10)).toFloat(), paint);
             if (board[i] == COM) c.drawBitmap(IMG_WHITE, (BLOCK_WIDTH * (i % 10)).toFloat(), (BLOCK_HELGHT * (i / 10)).toFloat(), paint);
@@ -120,6 +117,9 @@ internal class ReversiView(context: Context) : View(context) {
     override fun onTouchEvent(me: MotionEvent): Boolean {
         var padX = (me.x / BLOCK_WIDTH).toInt()
         var padY = (me.y / BLOCK_HELGHT).toInt()
+
+        if (padX > 10) return true
+        if (padY > 10) return true
 
         if (me.action == MotionEvent.ACTION_DOWN) {
             when (page) {
