@@ -9,10 +9,10 @@ import android.view.View
 
 internal class ReversiView(context: Context) : View(context) {
     private val res: Resources = context.resources
-    private val IMG_BOARD: Bitmap = BitmapFactory.decodeResource(res, R.drawable.board)
-    private val IMG_BLACK: Bitmap = BitmapFactory.decodeResource(res, R.drawable.black)
-    private val IMG_WHITE: Bitmap = BitmapFactory.decodeResource(res, R.drawable.white)
-    private val IMG_LIGHT: Bitmap = BitmapFactory.decodeResource(res, R.drawable.light)
+    private val IMG_BOARD: Bitmap = BitmapFactory.decodeResource(this.res, R.drawable.board)
+    private val IMG_BLACK: Bitmap = BitmapFactory.decodeResource(this.res, R.drawable.black)
+    private val IMG_WHITE: Bitmap = BitmapFactory.decodeResource(this.res, R.drawable.white)
+    private val IMG_LIGHT: Bitmap = BitmapFactory.decodeResource(this.res, R.drawable.light)
 
     private val paint: Paint = Paint()
 
@@ -29,142 +29,142 @@ internal class ReversiView(context: Context) : View(context) {
 
     private val MOVE: Array<Int> = arrayOf(-11, -10, -9, -1, 1, 9, 10, 11)
 
-    private var BLOCK_WIDTH: Int = 96
-    private var BLOCK_HELGHT: Int = 96
+    private val BLOCK_WIDTH: Int = 96
+    private val BLOCK_HELGHT: Int = 96
 
     private var board: Array<Int> = Array(100) { 0 }
-    private var page: Int = TITLE
-    private var turn: Int = TITLE
+    private var page: Int = this.TITLE
+    private var turn: Int = this.TITLE
     private var place: Int = 0
     private var placeMap: Array<Int> = Array(100) { 0 }
-    private var playerColor = BLACK
+    private var playerColor = this.BLACK
 
     init {
-        paint.color = Color.BLUE
-        paint.textSize = 60f
+        this.paint.color = Color.BLUE
+        this.paint.textSize = 60f
     }
 
     //描写処理
     public override fun onDraw(c: Canvas) {
         // ボードを表示
-        c.drawBitmap(IMG_BOARD, 0.0f, 0.0f, paint)
+        c.drawBitmap(this.IMG_BOARD, 0.0f, 0.0f, this.paint)
 
         for (i in (11..88)) {
-            if (board[i] == PLAYER) c.drawBitmap(IMG_BLACK, (BLOCK_WIDTH * (i % 10)).toFloat(), (BLOCK_HELGHT * (i / 10)).toFloat(), paint);
-            if (board[i] == COM) c.drawBitmap(IMG_WHITE, (BLOCK_WIDTH * (i % 10)).toFloat(), (BLOCK_HELGHT * (i / 10)).toFloat(), paint);
+            if (this.board[i] == this.PLAYER) c.drawBitmap(this.IMG_BLACK, (this.BLOCK_WIDTH * (i % 10)).toFloat(), (this.BLOCK_HELGHT * (i / 10)).toFloat(), this.paint);
+            if (this.board[i] == this.COM) c.drawBitmap(this.IMG_WHITE, (this.BLOCK_WIDTH * (i % 10)).toFloat(), (this.BLOCK_HELGHT * (i / 10)).toFloat(), this.paint);
         }
 
-        when (page) {
-            TITLE -> {
+        when (this.page) {
+            this.TITLE -> {
             }
-            TURN -> {
+            this.TURN -> {
                 // ページ移動
-                page = turn
+                this.page = this.turn
                 invalidate()
             }
-            PLAYER -> {
-                makePlaceMap(PLAYER)
+            this.PLAYER -> {
+                this.makePlaceMap(this.PLAYER)
                 //おける場所を表示
                 for (i in (11..88)) {
-                    if (placeMap[i] > 0) c.drawBitmap(IMG_LIGHT, (BLOCK_WIDTH * (i % 10)).toFloat(), (BLOCK_HELGHT * (i / 10)).toFloat(), paint)
+                    if (this.placeMap[i] > 0) c.drawBitmap(this.IMG_LIGHT, (this.BLOCK_WIDTH * (i % 10)).toFloat(), (this.BLOCK_HELGHT * (i / 10)).toFloat(), this.paint)
                 }
             }
-            COM -> {
-                makePlaceMap(COM)
+            this.COM -> {
+                this.makePlaceMap(this.COM)
                 //おける場所を表示
                 for (i in (11..88)) {
-                    if (placeMap[i] > 0) c.drawBitmap(IMG_LIGHT, (BLOCK_WIDTH * (i % 10)).toFloat(), (BLOCK_HELGHT * (i / 10)).toFloat(), paint)
+                    if (this.placeMap[i] > 0) c.drawBitmap(this.IMG_LIGHT, (this.BLOCK_WIDTH * (i % 10)).toFloat(), (this.BLOCK_HELGHT * (i / 10)).toFloat(), this.paint)
                 }
             }
-            REVERS -> {
+            this.REVERS -> {
                 // おいて裏返す
-                this.reverse(turn, place)
+                this.reverse(this.turn, this.place)
                 // ページ移動
-                page = CONTROL
+                this.page = this.CONTROL
                 invalidate()
             }
-            CONTROL -> {
+            this.CONTROL -> {
                 // ターン交代
-                turn = if (turn == PLAYER) COM else PLAYER
+                this.turn = if (this.turn == this.PLAYER) this.COM else this.PLAYER
                 // ページ移動
-                if (makePlaceMap(PLAYER) == true && makePlaceMap(COM) == true) {
-                    page = RESULT
-                } else if (makePlaceMap(turn) == true) {
-                    page = PASS
+                if (this.makePlaceMap(this.PLAYER) == true && this.makePlaceMap(this.COM) == true) {
+                    this.page = this.RESULT
+                } else if (this.makePlaceMap(this.turn) == true) {
+                    this.page = this.PASS
                 } else {
-                    page = TURN
+                    this.page = this.TURN
                 }
                 invalidate()
             }
-            PASS -> {
-                c.drawText("パス", 200.toFloat(), 600.toFloat(), paint)
+            this.PASS -> {
+                c.drawText("パス", 200.toFloat(), 600.toFloat(), this.paint)
                 // ターンを交代
-                turn = if (turn == PLAYER) COM else PLAYER
+                this.turn = if (this.turn == this.PLAYER) this.COM else this.PLAYER
                 // ページ移動
-                page = TURN
+                this.page = this.TURN
                 invalidate()
             }
-            RESULT -> {
-                c.drawText("結果", 400.toFloat(), 1100.toFloat(), paint)
-                c.drawLine(100.toFloat(), 1120.toFloat(), 860.toFloat(), 1120.toFloat(), paint)
-                c.drawText("黒　" + count(BLACK) + "　個", 200.toFloat(), 1300.toFloat(), paint)
-                c.drawText("白　" + count(WHITE) + "　個", 200.toFloat(), 1400.toFloat(), paint)
+            this.RESULT -> {
+                c.drawText("結果", 400.toFloat(), 1100.toFloat(), this.paint)
+                c.drawLine(100.toFloat(), 1120.toFloat(), 860.toFloat(), 1120.toFloat(), this.paint)
+                c.drawText("黒　" + this.count(this.BLACK) + "　個", 200.toFloat(), 1300.toFloat(), this.paint)
+                c.drawText("白　" + this.count(this.WHITE) + "　個", 200.toFloat(), 1400.toFloat(), this.paint)
             }
         }
     }
 
     //タッチ入力処理
     override fun onTouchEvent(me: MotionEvent): Boolean {
-        var padX = (me.x / BLOCK_WIDTH).toInt()
-        var padY = (me.y / BLOCK_HELGHT).toInt()
+        var padX = (me.x / this.BLOCK_WIDTH).toInt()
+        var padY = (me.y / this.BLOCK_HELGHT).toInt()
 
         if (padX > 10) return true
         if (padY > 10) return true
 
         if (me.action == MotionEvent.ACTION_DOWN) {
-            when (page) {
-                TITLE -> {
+            when (this.page) {
+                this.TITLE -> {
                     for (i in (0..99)) {
-                        board[i] = 0
+                        this.board[i] = 0
                     }
                     for (i in (0..9)) {
-                        board[i] = -1
-                        board[i + 90] = -1
+                        this.board[i] = -1
+                        this.board[i + 90] = -1
                     }
                     for (i in (1..8)) {
-                        board[i * 10] = -1
-                        board[i * 10 + 9] = -1
+                        this.board[i * 10] = -1
+                        this.board[i * 10 + 9] = -1
                     }
-                    board[44] = COM
-                    board[45] = PLAYER
-                    board[54] = PLAYER
-                    board[55] = COM
-                    turn = PLAYER
+                    this.board[44] = this.COM
+                    this.board[45] = this.PLAYER
+                    this.board[54] = this.PLAYER
+                    this.board[55] = this.COM
+                    this.turn = this.PLAYER
                     //ページ移動
-                    page = turn
+                    this.page = this.turn
                     invalidate()
                 }
-                PLAYER -> {
-                    if (placeMap[padX + padY * 10] > 0) {
-                        place = padX + padY * 10
+                this.PLAYER -> {
+                    if (this.placeMap[padX + padY * 10] > 0) {
+                        this.place = padX + padY * 10
                         //ページ移動
-                        page = REVERS
+                        this.page = this.REVERS
                         invalidate()
                     }
                 }
-                COM -> {
-                    if (placeMap[padX + padY * 10] > 0) {
-                        place = padX + padY * 10
+                this.COM -> {
+                    if (this.placeMap[padX + padY * 10] > 0) {
+                        this.place = padX + padY * 10
                         //ページ移動
-                        page = REVERS
+                        this.page = this.REVERS
                         invalidate()
                     }
                 }
-                PASS -> {
+                this.PASS -> {
                 }
-                RESULT -> {
+                this.RESULT -> {
                     // ページ移動
-                    page = TITLE
+                    this.page = this.TITLE
                     invalidate()
                 }
             }
@@ -174,21 +174,21 @@ internal class ReversiView(context: Context) : View(context) {
 
     // おいて裏返す
     private fun reverse(myCoin: Int, place: Int) {
-        var yourCoin = PLAYER
-        if (myCoin == PLAYER) {
-            yourCoin = COM
+        var yourCoin = this.PLAYER
+        if (myCoin == this.PLAYER) {
+            yourCoin = this.COM
         }
-        board[place] = myCoin
+        this.board[place] = myCoin
 
         for (i in (0..7)) {
-            if (board[place + MOVE[i]] == yourCoin) {
+            if (this.board[place + this.MOVE[i]] == yourCoin) {
                 for (j in (2..7)) {
-                    if (board[place + MOVE[i] * j] == myCoin) {
+                    if (this.board[place + this.MOVE[i] * j] == myCoin) {
                         for (k in (1..j - 1)) {
-                            board[place + MOVE[i] * k] = myCoin
+                            this.board[place + this.MOVE[i] * k] = myCoin
                         }
                         break
-                    } else if (board[place + MOVE[i] * j] == yourCoin) {
+                    } else if (this.board[place + this.MOVE[i] * j] == yourCoin) {
 
                     } else {
                         break
@@ -200,22 +200,22 @@ internal class ReversiView(context: Context) : View(context) {
 
     // そこにはおけるか
     private fun makePlaceMap(myCoin: Int): Boolean {
-        var yourCoin = PLAYER
+        var yourCoin = this.PLAYER
         var pass = true
 
-        if (myCoin == PLAYER) yourCoin = COM
+        if (myCoin == this.PLAYER) yourCoin = this.COM
 
         for (p in (0..99)) {
-            placeMap[p] = 0
-            if (0 < p && p < 100 && board[p] == 0) {
+            this.placeMap[p] = 0
+            if (0 < p && p < 100 && this.board[p] == 0) {
                 for (i in (0..7)) {
-                    if (board[p + MOVE[i]] == yourCoin) {
+                    if (this.board[p + this.MOVE[i]] == yourCoin) {
                         for (j in (2..7)) {
-                            if (board[p + MOVE[i] * j] == myCoin) {
-                                placeMap[p] += j - 1
+                            if (this.board[p + this.MOVE[i] * j] == myCoin) {
+                                this.placeMap[p] += j - 1
                                 pass = false
                                 break
-                            } else if (board[p + MOVE[i] * j] == yourCoin) {
+                            } else if (this.board[p + this.MOVE[i] * j] == yourCoin) {
                             } else {
                                 break
                             }
@@ -231,13 +231,13 @@ internal class ReversiView(context: Context) : View(context) {
     private fun count(color: Int): Int {
         var count = 0
 
-        if (playerColor == color) {
+        if (this.playerColor == color) {
             for (i in (0..99)) {
-                if (board[i] == PLAYER) count++;
+                if (this.board[i] == this.PLAYER) count++;
             }
         } else {
             for (i in (0..99)) {
-                if (board[i] == COM) count++;
+                if (this.board[i] == this.COM) count++;
             }
         }
         return count
