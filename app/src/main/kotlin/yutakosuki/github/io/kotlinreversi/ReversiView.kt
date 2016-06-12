@@ -150,6 +150,23 @@ internal class ReversiView(context: Context) : View(context) {
             yourCoin = COM
         }
         board[place] = myCoin
+
+        for (i in (0..7)) {
+            if (board[place + MOVE[i]] == yourCoin) {
+                for (j in (2..7)) {
+                    if (board[place + MOVE[i] * j] == myCoin) {
+                        for (k in (1..j - 1)) {
+                            board[place + MOVE[i] * k] = myCoin
+                        }
+                        break
+                    } else if (board[place + MOVE[i] * j] == yourCoin) {
+
+                    } else {
+                        break
+                    }
+                }
+            }
+        }
     }
 
     // そこにはおけるか
