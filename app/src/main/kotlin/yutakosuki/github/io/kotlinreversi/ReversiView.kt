@@ -80,10 +80,22 @@ internal class ReversiView(context: Context) : View(context) {
             CONTROL -> {
                 // ターン交代
                 turn = if (turn == PLAYER) COM else PLAYER
-                page = TURN
+                // ページ移動
+                if (makePlaceMap(PLAYER) == true && makePlaceMap(COM) == true) {
+                    page = RESULT
+                } else if (makePlaceMap(turn) == true) {
+                    page = PASS
+                } else {
+                    page = TURN
+                }
                 invalidate()
             }
             PASS -> {
+                // ターンを交代
+                turn = if (turn == PLAYER) COM else PLAYER
+                // ページ移動
+                page = TURN
+                invalidate()
             }
             RESULT -> {
             }
@@ -137,6 +149,9 @@ internal class ReversiView(context: Context) : View(context) {
                 PASS -> {
                 }
                 RESULT -> {
+                    // ページ移動
+                    page = TITLE
+                    invalidate()
                 }
             }
         }
